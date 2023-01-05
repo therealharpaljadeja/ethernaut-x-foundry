@@ -15,7 +15,6 @@ contract InstanceTest is DSTest {
     InstanceFactory instanceFactory;
 
     function setUp() public {
-        // Initializing contract with password - "ethernaut0" is the password used by Ethernaut.
         ethernaut = new Ethernaut();
         instanceFactory = new InstanceFactory();
         ethernaut.registerLevel(instanceFactory);
