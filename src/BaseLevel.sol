@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "openzeppelin-contracts-08/access/Ownable.sol";
+import "@openzeppelin/access/Ownable.sol";
 
 abstract contract Level is Ownable {
     function createInstance(address _player)

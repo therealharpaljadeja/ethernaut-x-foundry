@@ -2,12 +2,10 @@
 
 pragma solidity ^0.8.0;
 
-import "./levels/base/Level.sol";
-import "openzeppelin-contracts-08/access/Ownable.sol";
+import "./BaseLevel.sol";
+import "@openzeppelin/access/Ownable.sol";
 
 contract Ethernaut is Ownable {
-    IStatistics public statistics;
-
     // ----------------------------------
     // Owner interaction
     // ----------------------------------
@@ -17,11 +15,6 @@ contract Ethernaut is Ownable {
     // Only registered levels will be allowed to generate and validate level instances.
     function registerLevel(Level _level) public onlyOwner {
         registeredLevels[address(_level)] = true;
-        statistics.saveNewLevel(address(_level));
-    }
-
-    function setStatistics(address _statProxy) external onlyOwner {
-        statistics = IStatistics(_statProxy);
     }
 
     // ----------------------------------
@@ -61,8 +54,6 @@ contract Ethernaut is Ownable {
             false
         );
 
-        statistics.createNewInstance(instance, address(_level), msg.sender);
-
         // Retrieve created instance via logs.
         emit LevelInstanceCreatedLog(msg.sender, instance, address(_level));
     }
@@ -81,19 +72,8 @@ contract Ethernaut is Ownable {
             // Register instance as completed.
             data.completed = true;
 
-            statistics.submitSuccess(
-                _instance,
-                address(data.level),
-                msg.sender
-            );
             // Notify success via logs.
             emit LevelCompletedLog(msg.sender, _instance, address(data.level));
-        } else {
-            statistics.submitFailure(
-                _instance,
-                address(data.level),
-                msg.sender
-            );
         }
     }
 }
