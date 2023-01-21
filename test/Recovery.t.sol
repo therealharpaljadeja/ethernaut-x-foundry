@@ -24,7 +24,7 @@ contract RecoveryTest is DSTest {
     function testIsRecoveryCleared() public {
         vm.startPrank(eoaAddress);
 
-        address levelAddress = ethernaut.createLevelInstance{
+        address instanceAddress = ethernaut.createLevelInstance{
             value: 0.001 ether
         }(recoveryFactory);
 
