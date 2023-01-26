@@ -35,7 +35,7 @@ contract RecoveryTest is DSTest {
                         abi.encodePacked(
                             uint8(0xd6),
                             uint8(0x94),
-                            levelAddress,
+                            instanceAddress,
                             uint8(0x01)
                         )
                     )
@@ -45,7 +45,7 @@ contract RecoveryTest is DSTest {
 
         target.call(abi.encodeWithSignature("destroy(address)", eoaAddress));
 
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
 
         vm.stopPrank();
     }
