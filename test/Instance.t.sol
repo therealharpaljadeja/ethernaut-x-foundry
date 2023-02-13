@@ -10,8 +10,6 @@ import {Vm} from "forge-std/Vm.sol";
 contract InstanceTest is DSTest {
     Vm private constant vm = Vm(HEVM_ADDRESS);
     Ethernaut ethernaut;
-    Instance instance;
-    address instance;
     InstanceFactory instanceFactory;
 
     function setUp() public {
@@ -24,10 +22,10 @@ contract InstanceTest is DSTest {
 
     function testInstanceCleared() public {
         vm.startPrank(address(69));
-        instance = ethernaut.createLevelInstance(instanceFactory);
-        instance = Instance(instance);
+        address instance = ethernaut.createLevelInstance(instanceFactory);
+        Instance instanceContract = Instance(instance);
         // Skipping through all the functions and directly calling authenticate with the password.
-        instance.authenticate(instance.password());
+        instanceContract.authenticate(instanceContract.password());
         // Checking if level is cleared!
         assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         vm.stopPrank();
