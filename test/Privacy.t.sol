@@ -11,25 +11,25 @@ contract PrivacyTest is DSTest {
     Ethernaut ethernaut;
     PrivacyFactory privacyFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         privacyFactory = new PrivacyFactory();
         ethernaut.registerLevel(privacyFactory);
 
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsPrivacyCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        address levelAddress = ethernaut.createLevelInstance(privacyFactory);
-        bytes32 slot = vm.load(levelAddress, bytes32(uint256(5)));
+        address instance = ethernaut.createLevelInstance(privacyFactory);
+        bytes32 slot = vm.load(instance, bytes32(uint256(5)));
         bytes16 key = bytes16(slot);
-        Privacy(levelAddress).unlock(key);
+        Privacy(instance).unlock(key);
 
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

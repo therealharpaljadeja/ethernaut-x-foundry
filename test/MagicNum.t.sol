@@ -11,7 +11,7 @@ contract MagicNumTest is DSTest {
     Ethernaut ethernaut;
     MagicNumFactory magicNumFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
@@ -20,18 +20,16 @@ contract MagicNumTest is DSTest {
     }
 
     function testIsMagicNumCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        address instanceAddress = ethernaut.createLevelInstance(
-            magicNumFactory
-        );
+        address instance = ethernaut.createLevelInstance(magicNumFactory);
 
         SolverFactory solverFactory = new SolverFactory();
         address solver = solverFactory.deploy();
 
-        MagicNum(instanceAddress).setSolver(solver);
+        MagicNum(instance).setSolver(solver);
 
-        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

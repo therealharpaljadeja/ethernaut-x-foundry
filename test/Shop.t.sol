@@ -12,7 +12,7 @@ contract ShopTest is DSTest {
     Ethernaut ethernaut;
     ShopFactory shopFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
@@ -22,15 +22,15 @@ contract ShopTest is DSTest {
     }
 
     function testIsShopCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        address instanceAddress = ethernaut.createLevelInstance(shopFactory);
+        address instance = ethernaut.createLevelInstance(shopFactory);
 
-        ShopAttacker shopAttacker = new ShopAttacker(instanceAddress);
+        ShopAttacker shopAttacker = new ShopAttacker(instance);
 
         shopAttacker.attack();
 
-        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

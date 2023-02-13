@@ -12,7 +12,7 @@ contract FalloutTest is DSTest {
     Vm private constant vm = Vm(HEVM_ADDRESS);
     Ethernaut ethernaut;
     FalloutFactory falloutFactory;
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         // Initializing Fallout contract.
@@ -20,16 +20,16 @@ contract FalloutTest is DSTest {
         falloutFactory = new FalloutFactory();
         ethernaut.registerLevel(falloutFactory);
         vm.label(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84, "Fallout Owner");
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsFalloutCleared() public {
-        vm.startPrank(eoaAddress);
-        address levelAddress = ethernaut.createLevelInstance(falloutFactory);
-        falloutInstance = Fallout(payable(levelAddress));
+        vm.startPrank(eoa);
+        address instance = ethernaut.createLevelInstance(falloutFactory);
+        falloutInstance = Fallout(payable(instance));
         falloutInstance.Fal1out();
 
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

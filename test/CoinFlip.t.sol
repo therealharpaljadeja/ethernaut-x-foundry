@@ -12,26 +12,26 @@ contract CoinFlipTest is DSTest {
     Ethernaut ethernaut;
     CoinFlipFactory coinFlipFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         coinFlipFactory = new CoinFlipFactory();
         ethernaut.registerLevel(coinFlipFactory);
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsCoinFlipCleared() public {
-        vm.startPrank(eoaAddress);
-        address levelAddress = ethernaut.createLevelInstance(coinFlipFactory);
+        vm.startPrank(eoa);
+        address instance = ethernaut.createLevelInstance(coinFlipFactory);
         CoinFlipAttacker coinFlipAttacker = new CoinFlipAttacker(
-            payable(levelAddress)
+            payable(instance)
         );
         for (uint8 i = 0; i <= 10; i++) {
             coinFlipAttacker.attack();
             vm.roll(block.number + 1);
         }
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         vm.stopPrank();
     }
 }

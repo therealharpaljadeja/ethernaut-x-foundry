@@ -11,21 +11,21 @@ contract VaultTest is DSTest {
     Vm private constant vm = Vm(HEVM_ADDRESS);
     Ethernaut ethernaut;
     VaultFactory vaultFactory;
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         vaultFactory = new VaultFactory();
         ethernaut.registerLevel(vaultFactory);
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsVaultCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        address levelAddress = ethernaut.createLevelInstance(vaultFactory);
+        address instance = ethernaut.createLevelInstance(vaultFactory);
 
-        bytes32 password = vm.load(levelAddress, bytes32(uint256(1)));
+        bytes32 password = vm.load(instance, bytes32(uint256(1)));
         emit log_bytes(abi.encodePacked(password));
 
         uint8 i = 0;
@@ -39,11 +39,11 @@ contract VaultTest is DSTest {
             bytesArray[i] = password[i];
         }
 
-        Vault(levelAddress).unlock(password);
+        Vault(instance).unlock(password);
 
         emit log_string(string(bytesArray));
 
-        ethernaut.submitLevelInstance(payable(levelAddress));
+        ethernaut.submitLevelInstance(payable(instance));
 
         vm.stopPrank();
     }

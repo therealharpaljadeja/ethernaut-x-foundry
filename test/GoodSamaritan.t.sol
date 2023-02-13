@@ -10,7 +10,7 @@ import "../src/Ethernaut.sol";
 contract GoodSamaritanTest is DSTest {
     Ethernaut ethernaut;
     GoodSamaritanFactory goodSamaritanFactory;
-    address eoaAddress = address(69);
+    address eoa = address(69);
     Vm private constant vm = Vm(HEVM_ADDRESS);
 
     function setUp() public {
@@ -20,7 +20,7 @@ contract GoodSamaritanTest is DSTest {
     }
 
     function testIsGoodSamaritanCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
         address instance = ethernaut.createLevelInstance(goodSamaritanFactory);
         BadSamaritan badSamaritan = new BadSamaritan();

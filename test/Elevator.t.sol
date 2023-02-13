@@ -11,25 +11,25 @@ contract ElevatorTest is DSTest {
     Ethernaut ethernaut;
     ElevatorFactory elevatorFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         elevatorFactory = new ElevatorFactory();
         ethernaut.registerLevel(elevatorFactory);
 
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsElevatorCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        address levelAddress = ethernaut.createLevelInstance(elevatorFactory);
+        address instance = ethernaut.createLevelInstance(elevatorFactory);
         ElevatorHack building = new ElevatorHack();
 
-        building.attack(levelAddress);
+        building.attack(instance);
 
-        ethernaut.submitLevelInstance(payable(levelAddress));
+        ethernaut.submitLevelInstance(payable(instance));
 
         vm.stopPrank();
     }

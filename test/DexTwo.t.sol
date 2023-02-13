@@ -12,7 +12,7 @@ contract DexTwoTest is DSTest {
     Vm private constant vm = Vm(HEVM_ADDRESS);
     Ethernaut ethernaut;
     DexTwoFactory dexTwoFactory;
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
@@ -21,7 +21,7 @@ contract DexTwoTest is DSTest {
     }
 
     function testIsDexTwoCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
         address instance = ethernaut.createLevelInstance(dexTwoFactory);
         DexTwo dexTwo = DexTwo(instance);

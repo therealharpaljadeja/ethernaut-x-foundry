@@ -11,24 +11,24 @@ contract ForceTest is DSTest {
     Ethernaut ethernaut;
     ForceFactory forceFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         forceFactory = new ForceFactory();
         ethernaut.registerLevel(forceFactory);
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsForceCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
         ForceAttacker forceAttacker = new ForceAttacker();
         vm.deal(address(forceAttacker), 1 ether);
 
-        address levelAddress = ethernaut.createLevelInstance(forceFactory);
-        forceAttacker.attack(payable(levelAddress));
+        address instance = ethernaut.createLevelInstance(forceFactory);
+        forceAttacker.attack(payable(instance));
 
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         vm.stopPrank();
     }
 }

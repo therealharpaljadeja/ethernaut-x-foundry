@@ -10,18 +10,18 @@ import {Vm} from "forge-std/Vm.sol";
 contract TokenTest is DSTest {
     TokenFactory tokenFactory;
     Ethernaut ethernaut;
-    address eoaAddress = address(69);
+    address eoa = address(69);
     Vm private constant vm = Vm(HEVM_ADDRESS);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         tokenFactory = new TokenFactory();
         ethernaut.registerLevel(tokenFactory);
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsTokenCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
         Token token = Token(ethernaut.createLevelInstance(tokenFactory));
 
         token.transfer(address(101), 21);

@@ -22,14 +22,12 @@ contract GatekeeperOneTest is DSTest {
     function testIsGatekeeperOneCleared() public {
         // Pranking with an address having non-zero first nibble is important.
         vm.startPrank(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38);
-        address levelAddress = ethernaut.createLevelInstance(
-            gatekeeperOneFactory
-        );
+        address instance = ethernaut.createLevelInstance(gatekeeperOneFactory);
 
         GatekeeperOneAttacker gatekeeperOneAttacker = new GatekeeperOneAttacker();
-        gatekeeperOneAttacker.attack(levelAddress);
+        gatekeeperOneAttacker.attack(instance);
 
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         vm.stopPrank();
     }
 }

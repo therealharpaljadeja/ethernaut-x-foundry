@@ -11,31 +11,31 @@ contract ReentranceTest is DSTest {
     Ethernaut ethernaut;
     ReentranceFactory reentranceFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         reentranceFactory = new ReentranceFactory();
         ethernaut.registerLevel(reentranceFactory);
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsReentranceCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
         uint256 amount = reentranceFactory.insertCoin();
 
-        address levelAddress = ethernaut.createLevelInstance{value: amount}(
+        address instance = ethernaut.createLevelInstance{value: amount}(
             reentranceFactory
         );
 
         ReentranceAttacker reentranceAttacker = new ReentranceAttacker(
-            levelAddress
+            instance
         );
 
         reentranceAttacker.attack{value: amount}();
 
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

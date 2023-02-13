@@ -11,7 +11,7 @@ contract MotorbikeTest is DSTest {
     Ethernaut ethernaut;
     MotorbikeFactory motorbikeFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
@@ -20,7 +20,7 @@ contract MotorbikeTest is DSTest {
     }
 
     function testIsMotorbikeCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
         address instance = ethernaut.createLevelInstance(motorbikeFactory);
 

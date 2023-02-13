@@ -11,7 +11,7 @@ contract InstanceTest is DSTest {
     Vm private constant vm = Vm(HEVM_ADDRESS);
     Ethernaut ethernaut;
     Instance instance;
-    address levelAddress;
+    address instance;
     InstanceFactory instanceFactory;
 
     function setUp() public {
@@ -24,12 +24,12 @@ contract InstanceTest is DSTest {
 
     function testInstanceCleared() public {
         vm.startPrank(address(69));
-        levelAddress = ethernaut.createLevelInstance(instanceFactory);
-        instance = Instance(levelAddress);
+        instance = ethernaut.createLevelInstance(instanceFactory);
+        instance = Instance(instance);
         // Skipping through all the functions and directly calling authenticate with the password.
         instance.authenticate(instance.password());
         // Checking if level is cleared!
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         vm.stopPrank();
     }
 }

@@ -11,7 +11,7 @@ contract PuzzleWalletTest is DSTest {
     Ethernaut ethernaut;
     PuzzleWalletFactory puzzleWalletFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
@@ -20,9 +20,9 @@ contract PuzzleWalletTest is DSTest {
     }
 
     function testIsPuzzleWalletCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
 
         address payable instance = payable(
             ethernaut.createLevelInstance{value: 0.001 ether}(
@@ -31,11 +31,9 @@ contract PuzzleWalletTest is DSTest {
         );
 
         PuzzleProxy puzzleProxy = PuzzleProxy(instance);
-        puzzleProxy.proposeNewAdmin(eoaAddress);
+        puzzleProxy.proposeNewAdmin(eoa);
 
-        instance.call(
-            abi.encodeWithSignature("addToWhitelist(address)", eoaAddress)
-        );
+        instance.call(abi.encodeWithSignature("addToWhitelist(address)", eoa));
 
         bytes[] memory data = new bytes[](1);
         data[0] = abi.encodeWithSignature("deposit()");
@@ -51,7 +49,7 @@ contract PuzzleWalletTest is DSTest {
         instance.call(
             abi.encodeWithSignature(
                 "execute(address,uint256,bytes)",
-                eoaAddress,
+                eoa,
                 0.002 ether,
                 ""
             )

@@ -12,27 +12,27 @@ contract KingTest is DSTest {
     Vm private constant vm = Vm(HEVM_ADDRESS);
     Ethernaut ethernaut;
     KingFactory kingFactory;
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         kingFactory = new KingFactory();
         ethernaut.registerLevel(kingFactory);
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testInstanceCleared() public {
-        vm.startPrank(eoaAddress);
-        address levelAddress = ethernaut.createLevelInstance{
-            value: 0.001 ether
-        }(kingFactory);
+        vm.startPrank(eoa);
+        address instance = ethernaut.createLevelInstance{value: 0.001 ether}(
+            kingFactory
+        );
         KingAttacker kingAttacker = new KingAttacker();
 
-        uint256 prize = King(payable(levelAddress)).prize();
+        uint256 prize = King(payable(instance)).prize();
 
-        kingAttacker.attack{value: prize}(payable(levelAddress));
+        kingAttacker.attack{value: prize}(payable(instance));
 
-        assertTrue(ethernaut.submitLevelInstance(payable(levelAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

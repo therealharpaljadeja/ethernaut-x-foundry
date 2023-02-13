@@ -11,7 +11,7 @@ contract GateKeeperThreeTest is DSTest {
     Ethernaut ethernaut;
     GatekeeperThreeFactory gateKeeperThreeFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
@@ -20,7 +20,7 @@ contract GateKeeperThreeTest is DSTest {
     }
 
     function testIsGateKeeperThreeCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
         address instance = ethernaut.createLevelInstance(
             gateKeeperThreeFactory

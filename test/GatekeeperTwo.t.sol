@@ -20,13 +20,11 @@ contract GatekeeperTwoTest is DSTest {
 
     function testIsGatekeeperTwoCleared() public {
         vm.startPrank(0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38);
-        address instanceAddress = ethernaut.createLevelInstance(
-            gatekeeperTwoFactory
-        );
+        address instance = ethernaut.createLevelInstance(gatekeeperTwoFactory);
 
-        new GatekeeperTwoAttacker(instanceAddress);
+        new GatekeeperTwoAttacker(instance);
 
-        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         vm.stopPrank();
     }
 }

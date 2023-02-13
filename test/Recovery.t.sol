@@ -11,22 +11,22 @@ contract RecoveryTest is DSTest {
     Ethernaut ethernaut;
     RecoveryFactory recoveryFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
         recoveryFactory = new RecoveryFactory();
         ethernaut.registerLevel(recoveryFactory);
 
-        vm.deal(eoaAddress, 1 ether);
+        vm.deal(eoa, 1 ether);
     }
 
     function testIsRecoveryCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        address instanceAddress = ethernaut.createLevelInstance{
-            value: 0.001 ether
-        }(recoveryFactory);
+        address instance = ethernaut.createLevelInstance{value: 0.001 ether}(
+            recoveryFactory
+        );
 
         address target = address(
             uint160(
@@ -35,7 +35,7 @@ contract RecoveryTest is DSTest {
                         abi.encodePacked(
                             uint8(0xd6),
                             uint8(0x94),
-                            instanceAddress,
+                            instance,
                             uint8(0x01)
                         )
                     )
@@ -43,9 +43,9 @@ contract RecoveryTest is DSTest {
             )
         );
 
-        target.call(abi.encodeWithSignature("destroy(address)", eoaAddress));
+        target.call(abi.encodeWithSignature("destroy(address)", eoa));
 
-        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }

