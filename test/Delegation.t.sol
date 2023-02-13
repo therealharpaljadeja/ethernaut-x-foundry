@@ -24,7 +24,8 @@ contract DelegationTest is DSTest {
     function testIsDelegationCleared() public {
         vm.startPrank(eoa);
         address instance = ethernaut.createLevelInstance(delegationFactory);
-        instance.call(abi.encodeWithSignature("pwn()"));
+        (bool pwnSuccess, ) = instance.call(abi.encodeWithSignature("pwn()"));
+        require(pwnSuccess, "pwn() failed");
 
         assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
