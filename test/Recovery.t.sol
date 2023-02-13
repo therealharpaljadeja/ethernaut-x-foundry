@@ -43,7 +43,10 @@ contract RecoveryTest is DSTest {
             )
         );
 
-        target.call(abi.encodeWithSignature("destroy(address)", eoa));
+        (bool destroySuccess, ) = target.call(
+            abi.encodeWithSignature("destroy(address)", eoa)
+        );
+        require(destroySuccess, "destroy() failed");
 
         assertTrue(ethernaut.submitLevelInstance(payable(instance)));
 
