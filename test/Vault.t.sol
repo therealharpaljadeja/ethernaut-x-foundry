@@ -1,30 +1,19 @@
 // SDPX-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "ds-test/test.sol";
-import "../src/Ethernaut.sol";
 import "../src/levels/Vault/Vault.sol";
 import "../src/levels/Vault/VaultFactory.sol";
-import {Vm} from "forge-std/Vm.sol";
+import "./BaseTest.sol";
 
-contract VaultTest is DSTest {
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    Ethernaut ethernaut;
+contract VaultTest is BaseTest {
     VaultFactory vaultFactory;
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         vaultFactory = new VaultFactory();
-        ethernaut.registerLevel(vaultFactory);
-        vm.deal(eoa, 1 ether);
+        super.setUp(vaultFactory);
     }
 
-    function testIsVaultCleared() public {
-        vm.startPrank(eoa);
-
-        address instance = ethernaut.createLevelInstance(vaultFactory);
-
+    function testIsVaultCleared() public testWrapper(vaultFactory, 0) {
         bytes32 password = vm.load(instance, bytes32(uint256(1)));
         emit log_bytes(abi.encodePacked(password));
 
@@ -42,9 +31,5 @@ contract VaultTest is DSTest {
         Vault(instance).unlock(password);
 
         emit log_string(string(bytesArray));
-
-        ethernaut.submitLevelInstance(payable(instance));
-
-        vm.stopPrank();
     }
 }

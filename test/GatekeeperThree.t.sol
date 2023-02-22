@@ -1,31 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "ds-test/test.sol";
-import "forge-std/vm.sol";
 import "../src/levels/GateKeeperThree/GateKeeperThreeFactory.sol";
 import "../src/levels/GateKeeperThree/GateOwner.sol";
-import "../src/Ethernaut.sol";
+import "./BaseTest.sol";
 
-contract GateKeeperThreeTest is DSTest {
-    Ethernaut ethernaut;
+contract GateKeeperThreeTest is BaseTest {
     GatekeeperThreeFactory gateKeeperThreeFactory;
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         gateKeeperThreeFactory = new GatekeeperThreeFactory();
-        ethernaut.registerLevel(gateKeeperThreeFactory);
+        super.setUp(gateKeeperThreeFactory);
     }
 
-    function testIsGateKeeperThreeCleared() public {
-        vm.startPrank(eoa);
-
-        address instance = ethernaut.createLevelInstance(
-            gateKeeperThreeFactory
-        );
-
+    function testIsGateKeeperThreeCleared()
+        public
+        testWrapper(gateKeeperThreeFactory, 0)
+    {
         GatekeeperThree gateKeeperThree = GatekeeperThree(payable(instance));
         gateKeeperThree.createTrick();
 
@@ -44,7 +35,5 @@ contract GateKeeperThreeTest is DSTest {
 
         // assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         // Can't check for success.
-
-        vm.stopPrank();
     }
 }

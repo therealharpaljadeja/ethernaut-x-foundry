@@ -1,33 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "ds-test/test.sol";
 import "../src/levels/Recovery/Recovery.sol";
 import "../src/levels/Recovery/RecoveryFactory.sol";
-import "../src/Ethernaut.sol";
-import {Vm} from "forge-std/Vm.sol";
+import "./BaseTest.sol";
 
-contract RecoveryTest is DSTest {
-    Ethernaut ethernaut;
+contract RecoveryTest is BaseTest {
     RecoveryFactory recoveryFactory;
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         recoveryFactory = new RecoveryFactory();
-        ethernaut.registerLevel(recoveryFactory);
-
-        vm.deal(eoa, 1 ether);
+        super.setUp(recoveryFactory);
     }
 
-    function testIsRecoveryCleared() public {
-        vm.startPrank(eoa);
-
-        address instance = ethernaut.createLevelInstance{value: 0.001 ether}(
-            recoveryFactory
-        );
-
+    function testIsRecoveryCleared()
+        public
+        testWrapper(recoveryFactory, 0.001 ether)
+    {
         address target = address(
             uint160(
                 uint256(
@@ -47,9 +36,5 @@ contract RecoveryTest is DSTest {
             abi.encodeWithSignature("destroy(address)", eoa)
         );
         require(destroySuccess, "destroy() failed");
-
-        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
-
-        vm.stopPrank();
     }
 }

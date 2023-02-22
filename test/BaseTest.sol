@@ -17,9 +17,9 @@ contract BaseTest is DSTest {
         vm.deal(eoa, 100 ether);
     }
 
-    modifier testWrapper(Level _level) {
+    modifier testWrapper(Level _level, uint256 value) {
         vm.startPrank(eoa);
-        instance = ethernaut.createLevelInstance(_level);
+        instance = ethernaut.createLevelInstance{value: value}(_level);
         _;
         assertTrue(ethernaut.submitLevelInstance(payable(instance)));
         vm.stopPrank();

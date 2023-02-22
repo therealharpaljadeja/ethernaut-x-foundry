@@ -1,29 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "ds-test/test.sol";
-import "forge-std/vm.sol";
-import "../src/Ethernaut.sol";
 import "../src/levels/Dex/DexFactory.sol";
 import "../src/levels/Dex/Dex.sol";
+import "./BaseTest.sol";
 
-contract DexTest is DSTest {
-    Ethernaut ethernaut;
+contract DexTest is BaseTest {
     DexFactory dexFactory;
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         dexFactory = new DexFactory();
-
-        ethernaut.registerLevel(dexFactory);
+        super.setUp(dexFactory);
     }
 
-    function testIsDexCleared() public {
-        vm.startPrank(eoa);
-
-        address instance = ethernaut.createLevelInstance(dexFactory);
+    function testIsDexCleared() public testWrapper(dexFactory, 0) {
         Dex dex = Dex(instance);
 
         address[2] memory tokens = [dex.token1(), dex.token2()];
@@ -60,9 +50,5 @@ contract DexTest is DSTest {
             fromIndex = 1 - fromIndex;
             toIndex = 1 - toIndex;
         }
-
-        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
-
-        vm.stopPrank();
     }
 }

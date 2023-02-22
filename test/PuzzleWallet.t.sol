@@ -2,35 +2,22 @@
 
 pragma solidity ^0.8.0;
 
-import "ds-test/test.sol";
-import "forge-std/vm.sol";
-import "../src/Ethernaut.sol";
 import "../src/levels/PuzzleWallet/PuzzleWalletFactory.sol";
+import "./BaseTest.sol";
 
-contract PuzzleWalletTest is DSTest {
-    Ethernaut ethernaut;
+contract PuzzleWalletTest is BaseTest {
     PuzzleWalletFactory puzzleWalletFactory;
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         puzzleWalletFactory = new PuzzleWalletFactory();
-        ethernaut.registerLevel(puzzleWalletFactory);
+        super.setUp(puzzleWalletFactory);
     }
 
-    function testIsPuzzleWalletCleared() public {
-        vm.startPrank(eoa);
-
-        vm.deal(eoa, 1 ether);
-
-        address payable instance = payable(
-            ethernaut.createLevelInstance{value: 0.001 ether}(
-                puzzleWalletFactory
-            )
-        );
-
-        PuzzleProxy puzzleProxy = PuzzleProxy(instance);
+    function testIsPuzzleWalletCleared()
+        public
+        testWrapper(puzzleWalletFactory, 0.001 ether)
+    {
+        PuzzleProxy puzzleProxy = PuzzleProxy(payable(instance));
         puzzleProxy.proposeNewAdmin(eoa);
 
         (bool addToWhitelistSuccess, ) = instance.call(
@@ -64,9 +51,5 @@ contract PuzzleWalletTest is DSTest {
             abi.encodeWithSignature("setMaxBalance(uint256)", 69)
         );
         require(setMaxBalanceSuccess, "setMaxBalance() failed");
-
-        assertTrue(ethernaut.submitLevelInstance(instance));
-
-        vm.stopPrank();
     }
 }

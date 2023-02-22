@@ -2,28 +2,19 @@
 
 pragma solidity ^0.8.0;
 
-import "forge-std/vm.sol";
-import "ds-test/test.sol";
-import "../src/Ethernaut.sol";
 import "../src/levels/DexTwo/DexTwoFactory.sol";
 import "../src/levels/DexTwo/MaliciousToken.sol";
+import "./BaseTest.sol";
 
-contract DexTwoTest is DSTest {
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    Ethernaut ethernaut;
+contract DexTwoTest is BaseTest {
     DexTwoFactory dexTwoFactory;
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         dexTwoFactory = new DexTwoFactory();
-        ethernaut.registerLevel(dexTwoFactory);
+        super.setUp(dexTwoFactory);
     }
 
-    function testIsDexTwoCleared() public {
-        vm.startPrank(eoa);
-
-        address instance = ethernaut.createLevelInstance(dexTwoFactory);
+    function testIsDexTwoCleared() public testWrapper(dexTwoFactory, 0) {
         DexTwo dexTwo = DexTwo(instance);
 
         address token1 = dexTwo.token1();
@@ -40,8 +31,5 @@ contract DexTwoTest is DSTest {
 
         dexTwo.swap(address(maliciousToken), token1, 100);
         dexTwo.swap(address(maliciousToken), token2, 200);
-
-        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
-        vm.stopPrank();
     }
 }

@@ -28,7 +28,7 @@ contract AlienCodexTest is BaseTest {
 
     function testIsAlienCodexCleared()
         public
-        testWrapper(Level(alienCodexFactory))
+        testWrapper(Level(alienCodexFactory), 0)
     {
         (bool makeContactSuccess, ) = instance.call(
             abi.encodeWithSignature("make_contact()")

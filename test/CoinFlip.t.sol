@@ -13,7 +13,7 @@ contract CoinFlipTest is BaseTest {
         super.setUp(coinFlipFactory);
     }
 
-    function testIsCoinFlipCleared() public testWrapper(coinFlipFactory) {
+    function testIsCoinFlipCleared() public testWrapper(coinFlipFactory, 0) {
         CoinFlipAttacker coinFlipAttacker = new CoinFlipAttacker(
             payable(instance)
         );

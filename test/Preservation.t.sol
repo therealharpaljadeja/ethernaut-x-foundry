@@ -1,28 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "forge-std/vm.sol";
-import "ds-test/test.sol";
-import "../src/Ethernaut.sol";
 import "../src/levels/Preservation/PreservationFactory.sol";
 import "../src/levels/Preservation/Preservation.sol";
 import "../src/levels/Preservation/MaliciousLibraryContract.sol";
+import "./BaseTest.sol";
 
-contract PreservationTest is DSTest {
-    Ethernaut ethernaut;
+contract PreservationTest is BaseTest {
     PreservationFactory preservationFactory;
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         preservationFactory = new PreservationFactory();
-        ethernaut.registerLevel(preservationFactory);
+        super.setUp(preservationFactory);
     }
 
-    function testIsPreservationCleared() public {
-        vm.startPrank(eoa);
-        address instance = ethernaut.createLevelInstance(preservationFactory);
+    function testIsPreservationCleared()
+        public
+        testWrapper(preservationFactory, 0)
+    {
         Preservation preservation = Preservation(instance);
 
         MaliciousLibraryContract maliciousLibraryContract = new MaliciousLibraryContract();
@@ -32,9 +27,5 @@ contract PreservationTest is DSTest {
 
         timeStamp = uint256(uint160(eoa));
         preservation.setFirstTime(timeStamp);
-
-        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
-
-        vm.stopPrank();
     }
 }

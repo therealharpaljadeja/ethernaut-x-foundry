@@ -1,34 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "ds-test/test.sol";
-import "../src/Ethernaut.sol";
 import "../src/levels/Force/ForceFactory.sol";
 import "../src/levels/Force/ForceAttacker.sol";
-import {Vm} from "forge-std/Vm.sol";
+import "./BaseTest.sol";
 
-contract ForceTest is DSTest {
-    Ethernaut ethernaut;
+contract ForceTest is BaseTest {
     ForceFactory forceFactory;
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         forceFactory = new ForceFactory();
-        ethernaut.registerLevel(forceFactory);
-        vm.deal(eoa, 1 ether);
+        super.setUp(forceFactory);
     }
 
-    function testIsForceCleared() public {
-        vm.startPrank(eoa);
+    function testIsForceCleared() public testWrapper(forceFactory, 0) {
         ForceAttacker forceAttacker = new ForceAttacker();
         vm.deal(address(forceAttacker), 1 ether);
 
-        address instance = ethernaut.createLevelInstance(forceFactory);
         forceAttacker.attack(payable(instance));
-
-        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
-        vm.stopPrank();
     }
 }
