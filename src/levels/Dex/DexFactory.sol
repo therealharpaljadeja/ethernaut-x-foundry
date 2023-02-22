@@ -14,36 +14,36 @@ contract DexFactory is Level {
         returns (address)
     {
         Dex instance = new Dex();
-        address instance = address(instance);
+        address instanceAddress = address(instance);
 
         SwappableToken tokenInstance = new SwappableToken(
-            instance,
+            instanceAddress,
             "Token 1",
             "TKN1",
             110
         );
         SwappableToken tokenInstanceTwo = new SwappableToken(
-            instance,
+            instanceAddress,
             "Token 2",
             "TKN2",
             110
         );
 
-        address tokeninstance = address(tokenInstance);
+        address tokenInstanceAddress = address(tokenInstance);
         address tokenInstanceTwoAddress = address(tokenInstanceTwo);
 
-        instance.setTokens(tokeninstance, tokenInstanceTwoAddress);
+        instance.setTokens(tokenInstanceAddress, tokenInstanceTwoAddress);
 
-        tokenInstance.approve(instance, 100);
-        tokenInstanceTwo.approve(instance, 100);
+        tokenInstance.approve(instanceAddress, 100);
+        tokenInstanceTwo.approve(instanceAddress, 100);
 
-        instance.addLiquidity(tokeninstance, 100);
+        instance.addLiquidity(tokenInstanceAddress, 100);
         instance.addLiquidity(tokenInstanceTwoAddress, 100);
 
         tokenInstance.transfer(_player, 10);
         tokenInstanceTwo.transfer(_player, 10);
 
-        return instance;
+        return instanceAddress;
     }
 
     function validateInstance(address payable _instance, address)

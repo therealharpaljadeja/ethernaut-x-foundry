@@ -14,36 +14,36 @@ contract DexTwoFactory is Level {
         returns (address)
     {
         DexTwo instance = new DexTwo();
-        address instance = address(instance);
+        address instanceAddress = address(instance);
 
         SwappableTokenTwo tokenInstance = new SwappableTokenTwo(
-            instance,
+            instanceAddress,
             "Token 1",
             "TKN1",
             110
         );
         SwappableTokenTwo tokenInstanceTwo = new SwappableTokenTwo(
-            instance,
+            instanceAddress,
             "Token 2",
             "TKN2",
             110
         );
 
-        address tokeninstance = address(tokenInstance);
+        address tokenInstanceAddress = address(tokenInstance);
         address tokenInstanceTwoAddress = address(tokenInstanceTwo);
 
-        instance.setTokens(tokeninstance, tokenInstanceTwoAddress);
+        instance.setTokens(tokenInstanceAddress, tokenInstanceTwoAddress);
 
-        tokenInstance.approve(instance, 100);
-        tokenInstanceTwo.approve(instance, 100);
+        tokenInstance.approve(instanceAddress, 100);
+        tokenInstanceTwo.approve(instanceAddress, 100);
 
-        instance.add_liquidity(tokeninstance, 100);
+        instance.add_liquidity(tokenInstanceAddress, 100);
         instance.add_liquidity(tokenInstanceTwoAddress, 100);
 
         tokenInstance.transfer(_player, 10);
         tokenInstanceTwo.transfer(_player, 10);
 
-        return instance;
+        return instanceAddress;
     }
 
     function validateInstance(address payable _instance, address)
