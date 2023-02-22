@@ -1,29 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "forge-std/console.sol";
-import "ds-test/test.sol";
-import "../src/Ethernaut.sol";
+import "./BaseTest.sol";
 import "../src/levels/CoinFlip/CoinFlipFactory.sol";
 import "../src/levels/CoinFlip/CoinFlipAttacker.sol";
-import {Vm} from "forge-std/Vm.sol";
 
-contract CoinFlipTest is DSTest {
-    Ethernaut ethernaut;
+contract CoinFlipTest is BaseTest {
     CoinFlipFactory coinFlipFactory;
-    Vm private constant vm = Vm(HEVM_ADDRESS);
-    address eoa = address(69);
 
     function setUp() public {
-        ethernaut = new Ethernaut();
         coinFlipFactory = new CoinFlipFactory();
-        ethernaut.registerLevel(coinFlipFactory);
-        vm.deal(eoa, 1 ether);
+        super.setUp(coinFlipFactory);
     }
 
-    function testIsCoinFlipCleared() public {
-        vm.startPrank(eoa);
-        address instance = ethernaut.createLevelInstance(coinFlipFactory);
+    function testIsCoinFlipCleared() public testWrapper(coinFlipFactory) {
         CoinFlipAttacker coinFlipAttacker = new CoinFlipAttacker(
             payable(instance)
         );
@@ -31,7 +21,5 @@ contract CoinFlipTest is DSTest {
             coinFlipAttacker.attack();
             vm.roll(block.number + 1);
         }
-        assertTrue(ethernaut.submitLevelInstance(payable(instance)));
-        vm.stopPrank();
     }
 }
